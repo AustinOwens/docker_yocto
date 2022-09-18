@@ -1,0 +1,90 @@
+#title           :docker.run
+#description     :This file builds the correct arguemnts for the docker run cmd
+#author          :Austin Owens
+#date            :9/18/2022
+#common_usage    :./docker.run -u <usr> -s $(pwd)/workspace -d /home/<usr>/workspace -i yocto-img
+#==============================================================================
+
+function print_usage() {
+    cat <<EOF
+OPTIONS:
+    -h: Help
+    -d <name>: Name of the dir to mount inside (dst) the container
+    -s <name>: Name of the dir to mount outside (src) the container
+    -u <name>: A user to use inside the container (should be same as container build arg)
+    -i <name >: The name of the docker image to run
+EOF
+    exit 1
+}
+
+usr=
+dst_dir=
+src_dir=
+img=
+
+while getopts 'hu:d:s:i:' opt
+do
+    case $opt in
+    h)
+        print_usage
+        ;;
+    u)
+        usr="$OPTARG"
+        ;;
+    d)
+        dst_dir="$OPTARG"
+        ;;
+    s)
+        src_dir="$OPTARG"
+        ;;
+    i)
+        img="$OPTARG"
+        ;;
+    *)
+        print_usage
+        ;;
+    esac
+done
+
+if [ -z ${usr} ]
+then
+    echo "[ERROR] Required argument for docker image -u"
+    exit 1
+fi
+
+
+if [ -z ${dst_dir} ]
+then
+    echo "[ERROR] Required argument for docker image -d"
+    exit 1
+fi
+
+
+if [ -z ${src_dir} ]
+then
+    echo "[ERROR] Required argument for docker image -s"
+    exit 1
+fi
+
+
+if [ -z ${img} ]
+then
+    echo "[ERROR] Required argument for docker image -i"
+    exit 1
+fi
+set -x
+
+docker run \
+   -it \
+   --rm \
+   --name "yocto_build" \
+   --net=host \
+   --volume="${src_dir}:${dst_dir}":rw \
+   --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
+   --privileged \
+   --cap-add=SYS_ADMIN \
+   --security-opt apparmor:unconfined \
+   --env="DISPLAY" \
+   -u ${usr} \
+   -w /home/${usr} ${img} /bin/bash
+
