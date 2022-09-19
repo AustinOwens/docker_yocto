@@ -24,11 +24,10 @@ RUN apt-get update \
         chrpath \
         socat \
         libsdl1.2-dev \
-        xterm \
-        sudo
+        xterm
 
 # Install dependancies for user dev
-RUN apt-get -y install vim git
+RUN apt-get -y install sudo vim git python3 python3-pip tzdata
 
 
 # Add USERNAME arg and set to "user" by default unless changed. Dockerfile args

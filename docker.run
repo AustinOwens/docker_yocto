@@ -76,9 +76,9 @@ set -x
 
 docker run \
    -it \
+   -p 8000:8000 \
    --rm \
    --name "yocto_build" \
-   --net=host \
    --volume="${src_dir}:${dst_dir}":rw \
    --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
    --privileged \

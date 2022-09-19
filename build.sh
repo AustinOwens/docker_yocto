@@ -2,17 +2,17 @@
 
 echo "[INFO] build stage started"
 
-usr=$(whoami)
-echo "[INFO] running as user: ${usr}"
+USR=$(whoami)
+echo "[INFO] running as user: ${USR}"
 echo "[INFO] current working directory:"
 pwd
 
-if [ $usr = "root" ]; then
+if [ $USR = "root" ]; then
 	echo "[ERROR] This script should be run as a non-root user"
 	exit 1
 fi
 
-DEFAULT_BUILD_DIR=/home/$usr/workspace/
+DEFAULT_BUILD_DIR=/home/$USR/workspace/
 
 # Use default build directory unless user specified another
 if [ "$#" -ne 1 ]; then
@@ -27,12 +27,12 @@ else
 fi
 
 # Define workspace
-workspace=$(pwd)
-echo "[INFO] Workspace: "$workspace
+WORKSPACE=$(pwd)
+echo "[INFO] Workspace: "$WORKSPACE
 
 # Define poky directory
-pokydir=$workspace/poky
-echo "[INFO] Poky directory: "$pokydir
+POKYDIR=$WORKSPACE/poky
+echo "[INFO] Poky directory: "$POKYDIR
 
 # Prevent git from prompting us such that this requires no user intervention
 git config --global color.ui false
@@ -40,5 +40,14 @@ git config --global user.name foo
 git config --global user.email foo@bar.com
 
 # Get Yocto
-git clone -b kirkstone git://git.yoctoproject.org/poky.git
-cd $pokydir
+if [ ! -d "$POKYDIR" ]; then
+	git clone -b kirkstone git://git.yoctoproject.org/poky.git
+fi
+
+# Source Yocto env
+cd $POKYDIR
+source oe-init-build-env
+
+# Build toaster webserver dependencies and source it
+pip3 install -r $POKYDIR/bitbake/toaster-requirements.txt
+source toaster start webport=0.0.0.0:8000
