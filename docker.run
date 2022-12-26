@@ -2,14 +2,13 @@
 #description     :This file builds the correct arguemnts for the docker run cmd
 #author          :Austin Owens
 #date            :9/18/2022
-#common_usage    :./docker.run -u <usr> -s $(pwd)/workspace -d /home/<usr>/workspace -i yocto-img
+#common_usage    :./docker.run -u <usr> -s $(pwd)/workspace -i yocto-img
 #==============================================================================
 
 function print_usage() {
     cat <<EOF
 OPTIONS:
     -h: Help
-    -d <name>: Name of the dir to mount inside (dst) the container
     -s <name>: Name of the dir to mount outside (src) the container
     -u <name>: A user to use inside the container (should be same as container build arg)
     -i <name >: The name of the docker image to run
@@ -18,11 +17,10 @@ EOF
 }
 
 usr=
-dst_dir=
 src_dir=
 img=
 
-while getopts 'hu:d:s:i:' opt
+while getopts 'hu:s:i:' opt
 do
     case $opt in
     h)
@@ -30,9 +28,6 @@ do
         ;;
     u)
         usr="$OPTARG"
-        ;;
-    d)
-        dst_dir="$OPTARG"
         ;;
     s)
         src_dir="$OPTARG"
@@ -49,13 +44,6 @@ done
 if [ -z ${usr} ]
 then
     echo "[ERROR] Required argument for docker image -u"
-    exit 1
-fi
-
-
-if [ -z ${dst_dir} ]
-then
-    echo "[ERROR] Required argument for docker image -d"
     exit 1
 fi
 
@@ -79,7 +67,7 @@ docker run \
    -p 8000:8000 \
    --rm \
    --name "yocto_build" \
-   --volume="${src_dir}:${dst_dir}":rw \
+   --volume="${src_dir}:/home/${usr}/workspace":rw \
    --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
    --privileged \
    --cap-add=SYS_ADMIN \
