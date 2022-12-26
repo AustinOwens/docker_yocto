@@ -68,11 +68,6 @@ docker run \
    --rm \
    --name "yocto_build" \
    --volume="${src_dir}:/home/${usr}/workspace":rw \
-   --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
-   --privileged \
-   --cap-add=SYS_ADMIN \
-   --security-opt apparmor:unconfined \
-   --env="DISPLAY" \
    -u ${usr} \
    -w /home/${usr} ${img} /bin/bash
 
