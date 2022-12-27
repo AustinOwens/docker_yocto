@@ -24,10 +24,19 @@ RUN apt-get update \
         chrpath \
         socat \
         libsdl1.2-dev \
-        xterm
+        xterm \
+        cpio \
+        file \
+        lz4 \
+        zstd \
+        locales
+
+# Enabling en_US.UTF-8 locales
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
 # Install dependancies for user dev
 RUN apt-get -y install sudo vim git python3 python3-pip tzdata
+
 
 
 # Add USERNAME arg and set to "user" by default unless changed. Dockerfile args
