@@ -35,6 +35,9 @@ git config --global user.email foo@bar.com
 cd $POKYDIR
 source oe-init-build-env
 
+# Add robodog metalayer
+bitbake-layers add-layer ../meta-robodog
+
 # Build toaster webserver dependencies and source it
 # pip3 install -r $POKYDIR/bitbake/toaster-requirements.txt
 # source toaster start webport=0.0.0.0:8000
