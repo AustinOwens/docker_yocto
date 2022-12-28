@@ -36,7 +36,29 @@ cd $POKYDIR
 source oe-init-build-env
 
 # Add robodog metalayer
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-core
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-vendor
 bitbake-layers add-layer ../meta-robodog
+
+# Export BOARD and MACHINE architecture type
+#export BOARD='zybo-zynq7'
+#export MACHINE='zynq-generic'
+
+export MACHINE='zybo-zynq7'
+
+# Add zynq-zybo-z7 DTB path to CONFIG_DTFILE since
+# poky/meta-xilinx/meta-xilinx-core/recipes-bsp/device-tree/device-tree.bb depends
+# on it.
+# export CONFIG_DTFILE="/home/$USR/workspace/poky/meta-robodog/recipes-core/images/zynq-zybo-z7.dtb"
+
+# The BB_ENV_PASSTHROUGH_ADDITIONS var was exported when the oe-init-build-env
+# script was sourced above. It is responsable for passing through certain shell
+# env vars to the poky build system.
+# export BB_ENV_PASSTHROUGH_ADDITIONS="CONFIG_DTFILE $BB_ENV_PASSTHROUGH_ADDITIONS"
+
+# Build RoboDog image
+bitbake robodog-image
 
 # Build toaster webserver dependencies and source it
 # pip3 install -r $POKYDIR/bitbake/toaster-requirements.txt
