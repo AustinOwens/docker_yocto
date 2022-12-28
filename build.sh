@@ -35,10 +35,24 @@ git config --global user.email foo@bar.com
 cd $POKYDIR
 source oe-init-build-env
 
-# Add robodog metalayer
+# Add openembedded metalayers
+bitbake-layers add-layer ../meta-openembedded/meta-oe
+bitbake-layers add-layer ../meta-openembedded/meta-filesystems
+bitbake-layers add-layer ../meta-openembedded/meta-python
+bitbake-layers add-layer ../meta-openembedded/meta-networking
+
+# Add virtualization metalayer
+bitbake-layers add-layer ../meta-virtualization
+
+# Add xilinx metalayers
+bitbake-layers add-layer ../meta-xilinx/meta-microblaze
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-bsp
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-contrib
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-core
-bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone-experimental
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-vendor
+
+# Add robodog metalayer
 bitbake-layers add-layer ../meta-robodog
 
 # Export BOARD and MACHINE architecture type
