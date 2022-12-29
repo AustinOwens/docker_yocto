@@ -1,0 +1,38 @@
+
+project workspace/poky/meta-xilinx/
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
+index dd87ff31..7dc66d57 100644
+--- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
++++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
+@@ -2,10 +2,14 @@ DESCRIPTION = "First Stage Bootloader"
+ 
+ inherit xlnx-embeddedsw deploy
+ 
+-COMPATIBLE_HOST = ".*-(elf|eabi)"
++COMPATIBLE_HOST = ".*-(elf|eabi|gnueabi)"
+ COMPATIBLE_MACHINE = "none"
+ COMPATIBLE_MACHINE:zynq = ".*"
+ COMPATIBLE_MACHINE:zynqmp = ".*"
++COMPATIBLE_MACHINE:zynq-generic = ".*"
++
++REPO = "https://github.com/Xilinx/embeddedsw.git"
++BB_STRICT_CHECKSUM = "0"
+ 
+ PACKAGE_ARCH = "${MACHINE_ARCH}"
+ 
+@@ -14,6 +18,7 @@ S = "${WORKDIR}/git"
+ APP_DIR = "undefined"
+ APP_DIR:zynq = "zynq_fsbl"
+ APP_DIR:zynqmp = "zynqmp_fsbl"
++APP_DIR:zynq-generic = "zynq_generic_fsbl"
+ 
+ B = "${S}/lib/sw_apps/${APP_DIR}/src"
+ 
+@@ -32,6 +37,7 @@ ARCHIVER = "${AR}"
+ BSP_DIR ?= "${B}/../misc/undefined"
+ BSP_DIR:zynq   ?= "${B}/../misc/zynq_fsbl_bsp"
+ BSP_DIR:zynqmp ?= "${B}/../misc/zynqmp_fsbl_bsp"
++BSP_DIR:zynq-generic ?= "${B}/../misc/zynq_generic_fsbl_bsp"
+ BSP_TARGETS_DIR ?= "${BSP_DIR}/psu_cortexa53_0/libsrc"
+ 
+ # FSBL components expect AS to be CC.

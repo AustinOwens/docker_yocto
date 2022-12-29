@@ -51,7 +51,7 @@ bitbake-layers add-layer ../meta-xilinx/meta-microblaze
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-bsp
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-contrib
 #bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone-experimental
-bitbake-layers add-layer ../meta-xilinx/meta-xilinx-vendor
+#bitbake-layers add-layer ../meta-xilinx/meta-xilinx-vendor
 
 # Add robodog metalayer
 bitbake-layers add-layer ../meta-robodog
