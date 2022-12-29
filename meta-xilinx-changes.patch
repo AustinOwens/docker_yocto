@@ -1,0 +1,143 @@
+diff --git a/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx-native_2022.2.bb b/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx-native_2022.2.bb
+index 5e6c2d28..28086cbc 100644
+--- a/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx-native_2022.2.bb
++++ b/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx-native_2022.2.bb
+@@ -2,6 +2,13 @@ require qemu-xilinx-native.inc
+ BPN = "qemu-xilinx"
+ 
+ EXTRA_OECONF:append = " --target-list=${@get_qemu_usermode_target_list(d)} --disable-tools --disable-blobs --disable-guest-agent"
++EXTRA_OECONF:remove = "--disable-jack"
++EXTRA_OECONF:remove = "--disable-png"
++PACKAGECONFIG:remove = "--disable-jack"
++PACKAGECONFIG:remove = "--disable-png"
++
++PACKAGECONFIG[jack] = "--enable-jack"
++PACKAGECONFIG[png] = "--enable-png"
+ 
+ PROVIDES = "qemu-native"
+ PACKAGECONFIG ??= "pie"
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/makefile-skip-copy_bsp.sh.patch b/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/makefile-skip-copy_bsp.sh.patch
+index 5b9cc71b..ef94345f 100644
+--- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/makefile-skip-copy_bsp.sh.patch
++++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/makefile-skip-copy_bsp.sh.patch
+@@ -1,47 +1,53 @@
+-Prevent makefile from calling copy_bsp.sh
+-
+-If we call copy_bsp.sh we will undo any manual compliation steps we
+-have already done.  Avoid this.
+-
+-YP integration specific
+-
+-Signed-off-by: Mark Hatle <mark.hatle@xilinx.com>
+-
+-diff --git a/lib/sw_apps/zynqmp_pmufw/src/Makefile b/lib/sw_apps/zynqmp_pmufw/src/Makefile
+-index 1750c0a329..17f6a545ea 100644
+---- a/lib/sw_apps/zynqmp_pmufw/src/Makefile
+-+++ b/lib/sw_apps/zynqmp_pmufw/src/Makefile
+-@@ -28,8 +28,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
++diff --git a/lib/sw_apps/versal_plm/src/versal/Makefile b/lib/sw_apps/versal_plm/src/versal/Makefile
++index d65e4c1ae5..7c05e54b43 100644
++--- a/lib/sw_apps/versal_plm/src/versal/Makefile
+++++ b/lib/sw_apps/versal_plm/src/versal/Makefile
++@@ -32,8 +32,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
+  	$(CC) -o $@ $(OBJS) $(CC_FLAGS) $(CFLAGS) $(LN_FLAGS) $(LIBPATH) $(LSCRIPT)
+  
+  $(LIBS):
+ -	echo "Copying BSP files"
+--	../misc/copy_bsp.sh
++-	../../misc/versal/copy_bsp.sh
+ +	#echo "Copying BSP files"
+-+	#../misc/copy_bsp.sh
+++	#../../misc/versal/copy_bsp.sh
+  	echo "Compiling bsp"
+- 	$(MAKE) -C ../misc/zynqmp_pmufw_bsp
++ 	$(MAKE) -C ../../misc/versal/versal_plm_bsp
+  
+-diff --git a/lib/sw_apps/versal_plm/src/Makefile b/lib/sw_apps/versal_plm/src/Makefile
+-index b4536e8584..a8643ecd47 100644
+---- a/lib/sw_apps/versal_plm/src/Makefile
+-+++ b/lib/sw_apps/versal_plm/src/Makefile
+-@@ -30,8 +30,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
++diff --git a/lib/sw_apps/versal_plm/src/versal_net/Makefile b/lib/sw_apps/versal_plm/src/versal_net/Makefile
++index 39c7aa38e3..081d8f1b2e 100644
++--- a/lib/sw_apps/versal_plm/src/versal_net/Makefile
+++++ b/lib/sw_apps/versal_plm/src/versal_net/Makefile
++@@ -32,8 +32,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
+  	$(CC) -o $@ $(OBJS) $(CC_FLAGS) $(CFLAGS) $(LN_FLAGS) $(LIBPATH) $(LSCRIPT)
+  
+  $(LIBS):
+ -	echo "Copying BSP files"
+--	../misc/copy_bsp.sh
++-	../../misc/versal_net/copy_bsp.sh
+ +	#echo "Copying BSP files"
+-+	#../misc/copy_bsp.sh
+++	#../../misc/versal_net/copy_bsp.sh
+  	echo "Compiling bsp"
+- 	$(MAKE) -C ../misc/versal_plm_bsp
++ 	$(MAKE) -C ../../misc/versal_net/versal_plm_bsp
+  
+-diff --git a/lib/sw_apps/versal_psmfw/src/Makefile b/lib/sw_apps/versal_psmfw/src/Makefile
+-index fdfee0a092..1ed664114b 100644
+---- a/lib/sw_apps/versal_psmfw/src/Makefile
+-+++ b/lib/sw_apps/versal_psmfw/src/Makefile
+-@@ -29,8 +29,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
++diff --git a/lib/sw_apps/versal_psmfw/src/versal/Makefile b/lib/sw_apps/versal_psmfw/src/versal/Makefile
++index 1572bbbca9..ce182acaa7 100644
++--- a/lib/sw_apps/versal_psmfw/src/versal/Makefile
+++++ b/lib/sw_apps/versal_psmfw/src/versal/Makefile
++@@ -34,8 +34,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
++ 	$(CC) -o $@ $(OBJS) $(CC_FLAGS) $(CFLAGS) $(LN_FLAGS) $(LIBPATH) $(LSCRIPT)
++ 
++ $(LIBS):
++-	echo "Copying BSP files"
++-	../../misc/copy_bsp.sh
+++	#echo "Copying BSP files"
+++	#../../misc/copy_bsp.sh
++ 	echo "Compiling bsp"
++ 	$(MAKE) -C ../../misc/versal_psmfw_bsp
++ 
++diff --git a/lib/sw_apps/zynqmp_pmufw/src/Makefile b/lib/sw_apps/zynqmp_pmufw/src/Makefile
++index 1750c0a329..17f6a545ea 100644
++--- a/lib/sw_apps/zynqmp_pmufw/src/Makefile
+++++ b/lib/sw_apps/zynqmp_pmufw/src/Makefile
++@@ -28,8 +28,8 @@ $(EXEC): $(LIBS) $(OBJS) $(INCLUDES)
+  	$(CC) -o $@ $(OBJS) $(CC_FLAGS) $(CFLAGS) $(LN_FLAGS) $(LIBPATH) $(LSCRIPT)
+  
+  $(LIBS):
+@@ -50,5 +56,5 @@ index fdfee0a092..1ed664114b 100644
+ +	#echo "Copying BSP files"
+ +	#../misc/copy_bsp.sh
+  	echo "Compiling bsp"
+- 	$(MAKE) -C ../misc/versal_psmfw_bsp
++ 	$(MAKE) -C ../misc/zynqmp_pmufw_bsp
+  
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
+index dd87ff31..c0b6f0a0 100644
+--- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
++++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
+@@ -2,10 +2,11 @@ DESCRIPTION = "First Stage Bootloader"
+ 
+ inherit xlnx-embeddedsw deploy
+ 
+-COMPATIBLE_HOST = ".*-(elf|eabi)"
++COMPATIBLE_HOST = ".*-(elf|eabi|gnueabi)"
+ COMPATIBLE_MACHINE = "none"
+ COMPATIBLE_MACHINE:zynq = ".*"
+ COMPATIBLE_MACHINE:zynqmp = ".*"
++COMPATIBLE_MACHINE:zynq-generic = ".*"
+ 
+ PACKAGE_ARCH = "${MACHINE_ARCH}"
+ 
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb
+index 697431ad..91e4e0b2 100644
+--- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb
++++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb
+@@ -3,6 +3,8 @@ DEFAULT_PREFERENCE = "-1"
+ 
+ require fsbl-firmware.inc
+ 
++REPO = "https://github.com/Xilinx/embeddedsw.git"
++
+ FILESPATH .= ":${FILE_DIRNAME}/embeddedsw"
+ 
+ SRC_URI += " \

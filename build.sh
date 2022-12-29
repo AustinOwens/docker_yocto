@@ -36,20 +36,21 @@ cd $POKYDIR
 source oe-init-build-env
 
 # Add openembedded metalayers
-bitbake-layers add-layer ../meta-openembedded/meta-oe
-bitbake-layers add-layer ../meta-openembedded/meta-filesystems
-bitbake-layers add-layer ../meta-openembedded/meta-python
-bitbake-layers add-layer ../meta-openembedded/meta-networking
+#bitbake-layers add-layer ../meta-openembedded/meta-oe
+#bitbake-layers add-layer ../meta-openembedded/meta-filesystems
+#bitbake-layers add-layer ../meta-openembedded/meta-python
+#bitbake-layers add-layer ../meta-openembedded/meta-networking
 
 # Add virtualization metalayer
-bitbake-layers add-layer ../meta-virtualization
+#bitbake-layers add-layer ../meta-virtualization
 
 # Add xilinx metalayers
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-core
+bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone
 bitbake-layers add-layer ../meta-xilinx/meta-microblaze
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-bsp
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-contrib
-bitbake-layers add-layer ../meta-xilinx/meta-xilinx-core
-bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone-experimental
+#bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone-experimental
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-vendor
 
 # Add robodog metalayer
@@ -59,7 +60,8 @@ bitbake-layers add-layer ../meta-robodog
 #export BOARD='zybo-zynq7'
 #export MACHINE='zynq-generic'
 
-export MACHINE='zybo-zynq7'
+export MACHINE='zynq-generic'
+export BOARD='zybo-zynq7'
 
 # Add zynq-zybo-z7 DTB path to CONFIG_DTFILE since
 # poky/meta-xilinx/meta-xilinx-core/recipes-bsp/device-tree/device-tree.bb depends
