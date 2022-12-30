@@ -6,36 +6,68 @@
 #==============================================================================
 
 # Download latest base image from Ubuntu
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install dependancies for Yocto
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install \
-        gawk \
+    && apt-get -y install \
+        gawk \ 
         wget \
-        git-core \
+        git \
         diffstat \
         unzip \
         texinfo \
-        gcc-multilib \
+        gcc \
         build-essential \
         chrpath \
         socat \
+        cpio \
+        python3 \
+        python3-pip \
+        python3-pexpect \
+        xz-utils \
+        debianutils \
+        iputils-ping \
+        python3-git \
+        python3-jinja2 \
+        libegl1-mesa \
         libsdl1.2-dev \
         xterm \
-        cpio \
-        file \
-        lz4 \
+        python3-subunit \
+        mesa-common-dev \
         zstd \
+        liblz4-tool \
+        file \
+        gcc-arm-none-eabi \
         locales
+
+# RUN apt-get update \
+#     && apt-get -y install \
+#         gawk \
+#         wget \
+#         git-core \
+#         diffstat \
+#         unzip \
+#         texinfo \
+#         gcc-multilib \
+#         build-essential \
+#         chrpath \
+#         socat \
+#         libsdl1.2-dev \
+#         xterm \
+#         cpio \
+#         file \
+#         lz4 \
+#         zstd \
+#         locales
 
 # Enabling en_US.UTF-8 locales
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
 # Install dependancies for user dev
-RUN apt-get -y install sudo vim git python3 python3-pip tzdata
+RUN apt-get -y install sudo vim tzdata
 
 
 

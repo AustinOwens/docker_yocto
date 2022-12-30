@@ -1,10 +1,52 @@
 
 project workspace/poky/meta-xilinx/
+diff --git a/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx.inc b/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx.inc
+index cc12b03e..07c09621 100644
+--- a/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx.inc
++++ b/meta-xilinx-core/recipes-devtools/qemu/qemu-xilinx.inc
+@@ -35,6 +35,7 @@ PACKAGECONFIG[pulsedio] = "--audio-drv-list=pa,,pulseaudio"
+ PACKAGECONFIG[selinux] = ""
+ PACKAGECONFIG[slirp] = "--enable-slirp=git,--disable-slirp,,"
+ PACKAGECONFIG[jack] = ""
++PACKAGECONFIG[png] = ""
+ 
+ DISABLE_STATIC:pn-${PN} = ""
+ 
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/fix-zynq_fsbl-copy_bsp.sh.patch b/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/fix-zynq_fsbl-copy_bsp.sh.patch
+new file mode 100644
+index 00000000..2107b78b
+--- /dev/null
++++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/embeddedsw/fix-zynq_fsbl-copy_bsp.sh.patch
+@@ -0,0 +1,24 @@
++diff --git a/lib/sw_apps/zynq_fsbl/misc/copy_bsp.sh b/lib/sw_apps/zynq_fsbl/misc/copy_bsp.sh
++index 17d23b724b..79a4de2463 100755
++--- a/lib/sw_apps/zynq_fsbl/misc/copy_bsp.sh
+++++ b/lib/sw_apps/zynq_fsbl/misc/copy_bsp.sh
++@@ -58,10 +58,9 @@ cp $STANDALONE_DIR/arm/cortexa9/*.h  $BSP_DIR/libsrc/standalone/src/
++ cp $STANDALONE_DIR/arm/common/*.h   $BSP_DIR/libsrc/standalone/src/
++ cp $STANDALONE_DIR/arm/common/*.c   $BSP_DIR/libsrc/standalone/src/
++ cp $STANDALONE_DIR/arm/common/gcc/*  $BSP_DIR/libsrc/standalone/src/
++-
++-if [ $COMPILER == "arm-none-eabi-gcc" ]; then
+++if [ $(basename $COMPILER) == "arm-none-eabi-gcc" ]; then
++ 	cp $STANDALONE_DIR/arm/cortexa9/gcc/*  $BSP_DIR/libsrc/standalone/src/
++-elif [ $COMPILER == "armcc" ]; then 
+++elif [ $(basename $COMPILER) == "armcc" ]; then 
++ 	cp $STANDALONE_DIR/cortexa9/armcc/*  $BSP_DIR/libsrc/standalone/src/
++ fi
++ 	
++@@ -100,4 +99,4 @@ cp $WORKING_DIR/config.make $BSP_DIR/libsrc/standalone/src/
++ cp $STANDALONE_DIR/common/*  $BSP_DIR/include/
++ # no inbyte and outbyte present in standalone
++ cp $BOARD_DIR/inbyte.c $BOARD_DIR/outbyte.c  $BSP_DIR/libsrc/standalone/src/
++-export BSP_SEQUENTIAL_MAKEFILES
++\ No newline at end of file
+++export BSP_SEQUENTIAL_MAKEFILES
 diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
-index dd87ff31..7dc66d57 100644
+index dd87ff31..cd0f13c3 100644
 --- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
 +++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware.inc
-@@ -2,10 +2,14 @@ DESCRIPTION = "First Stage Bootloader"
+@@ -2,10 +2,11 @@ DESCRIPTION = "First Stage Bootloader"
  
  inherit xlnx-embeddedsw deploy
  
@@ -14,25 +56,67 @@ index dd87ff31..7dc66d57 100644
  COMPATIBLE_MACHINE:zynq = ".*"
  COMPATIBLE_MACHINE:zynqmp = ".*"
 +COMPATIBLE_MACHINE:zynq-generic = ".*"
-+
-+REPO = "https://github.com/Xilinx/embeddedsw.git"
-+BB_STRICT_CHECKSUM = "0"
  
  PACKAGE_ARCH = "${MACHINE_ARCH}"
  
-@@ -14,6 +18,7 @@ S = "${WORKDIR}/git"
+@@ -14,6 +15,7 @@ S = "${WORKDIR}/git"
  APP_DIR = "undefined"
  APP_DIR:zynq = "zynq_fsbl"
  APP_DIR:zynqmp = "zynqmp_fsbl"
-+APP_DIR:zynq-generic = "zynq_generic_fsbl"
++APP_DIR:zynq-generic = "zynq_fsbl"
  
  B = "${S}/lib/sw_apps/${APP_DIR}/src"
  
-@@ -32,6 +37,7 @@ ARCHIVER = "${AR}"
+@@ -24,6 +26,9 @@ do_configure() {
+     :
+ }
+ 
++CC = "/bin/arm-none-eabi-gcc"
++AR = "/bin/arm-none-eabi-ar"
++
+ COMPILER = "${CC}"
+ COMPILER_FLAGS = "-O2 -c"
+ EXTRA_COMPILER_FLAGS = "-g -Wall -Wextra -Os -flto -ffat-lto-objects"
+@@ -32,7 +37,8 @@ ARCHIVER = "${AR}"
  BSP_DIR ?= "${B}/../misc/undefined"
  BSP_DIR:zynq   ?= "${B}/../misc/zynq_fsbl_bsp"
  BSP_DIR:zynqmp ?= "${B}/../misc/zynqmp_fsbl_bsp"
-+BSP_DIR:zynq-generic ?= "${B}/../misc/zynq_generic_fsbl_bsp"
- BSP_TARGETS_DIR ?= "${BSP_DIR}/psu_cortexa53_0/libsrc"
+-BSP_TARGETS_DIR ?= "${BSP_DIR}/psu_cortexa53_0/libsrc"
++BSP_DIR:zynq-generic ?= "${B}/../misc"
++BSP_TARGETS_DIR ?= "${BSP_DIR}/ps7_cortexa9_0/libsrc"
  
  # FSBL components expect AS to be CC.
+ AS = "${CC}"
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_2022.2.bb b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_2022.2.bb
+index 3f9740a0..5baa3303 100644
+--- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_2022.2.bb
++++ b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_2022.2.bb
+@@ -3,8 +3,8 @@ require fsbl-firmware.inc
+ FILESPATH .= ":${FILE_DIRNAME}/embeddedsw"
+ 
+ SRC_URI += " \
+-            file://makefile-skip-copy_bsp.sh.patch \
+             file://fsbl-fixups.patch \
++            file://fix-zynq_fsbl-copy_bsp.sh.patch \
+            "
+ 
+ # This version does not build for zynq
+diff --git a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb b/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb
+deleted file mode 100644
+index 697431ad..00000000
+--- a/meta-xilinx-standalone/recipes-bsp/embeddedsw/fsbl-firmware_git.bb
++++ /dev/null
+@@ -1,13 +0,0 @@
+-# Only should be used for development
+-DEFAULT_PREFERENCE = "-1"
+-
+-require fsbl-firmware.inc
+-
+-FILESPATH .= ":${FILE_DIRNAME}/embeddedsw"
+-
+-SRC_URI += " \
+-            file://fsbl-fixups.patch \
+-           "
+-
+-# This version does not build for zynq
+-COMPATIBLE_MACHINE:zynq = "none"
