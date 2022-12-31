@@ -13,6 +13,7 @@ OPTIONS:
     -s <name>: Name of the dir to mount outside (src) the container
     -u <name>: A user to use inside the container (should be same as container build arg)
     -i <name>: The name of the docker image to run
+    -n: Do not use interactive input (TTY)
     container_cmd: What you want to run inside of the container (e.g. /bin/bash)
 EOF
     exit 1
@@ -21,8 +22,9 @@ EOF
 usr=
 src_dir=
 img=
+tty="t"
 
-while getopts 'hu:s:i:' opt
+while getopts 'hu:s:i:n' opt
 do
     case $opt in
     h)
@@ -36,6 +38,9 @@ do
         ;;
     i)
         img="$OPTARG"
+        ;;
+    n)
+        tty=""
         ;;
     *)
         print_usage
@@ -73,7 +78,7 @@ fi
 set -x
 
 docker run \
-   -it \
+   -i"${tty}" \
    -p 8000:8000 \
    --rm \
    --name "yocto_build" \
