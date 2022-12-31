@@ -35,38 +35,19 @@ git config --global user.email foo@bar.com
 cd $POKYDIR
 source oe-init-build-env
 
-# Add openembedded metalayers
-#bitbake-layers add-layer ../meta-openembedded/meta-oe
-#bitbake-layers add-layer ../meta-openembedded/meta-filesystems
-#bitbake-layers add-layer ../meta-openembedded/meta-python
-#bitbake-layers add-layer ../meta-openembedded/meta-networking
-
-# Add virtualization metalayer
-#bitbake-layers add-layer ../meta-virtualization
-
 # Add xilinx metalayers
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-core
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone
 bitbake-layers add-layer ../meta-xilinx/meta-microblaze
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-bsp
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-contrib
-#bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone-experimental
-#bitbake-layers add-layer ../meta-xilinx/meta-xilinx-vendor
 
 # Add robodog metalayer
 bitbake-layers add-layer ../meta-robodog
 
-# Export BOARD and MACHINE architecture type
-#export BOARD='zybo-zynq7'
-#export MACHINE='zynq-generic'
-
+# Export env vars for Yocto
 export MACHINE='zynq-generic'
 export BOARD='zybo-zynq7'
-
-# Add zynq-zybo-z7 DTB path to CONFIG_DTFILE since
-# poky/meta-xilinx/meta-xilinx-core/recipes-bsp/device-tree/device-tree.bb depends
-# on it.
-# export CONFIG_DTFILE="/home/$USR/workspace/poky/meta-robodog/recipes-core/images/zynq-zybo-z7.dtb"
 
 # The BB_ENV_PASSTHROUGH_ADDITIONS var was exported when the oe-init-build-env
 # script was sourced above. It is responsable for passing through certain shell

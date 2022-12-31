@@ -43,33 +43,11 @@ RUN apt-get update \
         gcc-arm-none-eabi \
         locales
 
-# RUN apt-get update \
-#     && apt-get -y install \
-#         gawk \
-#         wget \
-#         git-core \
-#         diffstat \
-#         unzip \
-#         texinfo \
-#         gcc-multilib \
-#         build-essential \
-#         chrpath \
-#         socat \
-#         libsdl1.2-dev \
-#         xterm \
-#         cpio \
-#         file \
-#         lz4 \
-#         zstd \
-#         locales
-
 # Enabling en_US.UTF-8 locales
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
 # Install dependancies for user dev
 RUN apt-get -y install sudo vim tzdata
-
-
 
 # Add USERNAME arg and set to "user" by default unless changed. Dockerfile args
 # can be changed by passing in the argument when building the docker image. For
@@ -84,8 +62,9 @@ ARG USERNAME=user
 RUN /usr/sbin/useradd -m -s /bin/bash -G sudo $USERNAME \
     && echo $USERNAME:$USERNAME | usr/sbin/chpasswd
 
-# Add build.sh to user's home dir
+# Add build.sh to user's home dir and make executable
 ADD build.sh /home/$USERNAME
+RUN chmod +x /home/$USERNAME/build.sh
 
 # Set USERNAME to default user when docker is launched
 USER $USERNAME
