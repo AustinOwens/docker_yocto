@@ -1,3 +1,4 @@
+#!/bin/bash
 #title         :docker.run
 #description   :This file builds the correct arguments for the docker run cmd
 #author        :Austin Owens
