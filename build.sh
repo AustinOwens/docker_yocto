@@ -30,7 +30,7 @@ echo "[INFO] Poky directory: "$POKYDIR
 
 # Change ownership of workspace directory to user of container
 echo "[INFO] Changing ownership of workspace directory"
-echo ${USR} | sudo -S chown ${USR} ../
+echo ${USR} | sudo -S chown -R ${USR} ../
 printf "\n[INFO] Owner of workspace directory: "${USR}
 printf "\n"
 
