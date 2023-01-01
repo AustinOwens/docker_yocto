@@ -32,6 +32,7 @@ echo "[INFO] Poky directory: "$POKYDIR
 echo "[INFO] Changing ownership of workspace directory"
 echo ${USR} | sudo -S chown ${USR} ../
 printf "\n[INFO] Owner of workspace directory: "${USR}
+printf "\n"
 
 # Prevent git from prompting us such that this requires no user intervention
 git config --global color.ui false
