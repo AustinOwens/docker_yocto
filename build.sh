@@ -16,7 +16,7 @@ fi
 DEFAULT_BUILD_DIR=${SCRIPT_DIR}/workspace/
 
 # Use default build directory
-echo "[INFO] Using default build directory: "$DEFAULT_BUILD_DIR
+echo "[INFO] Using default build directory: $DEFAULT_BUILD_DIR"
 mkdir -p $DEFAULT_BUILD_DIR
 cd $DEFAULT_BUILD_DIR
 
