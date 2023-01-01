@@ -47,7 +47,7 @@ RUN apt-get update \
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
 # Install dependancies for user dev
-RUN apt-get -y install sudo vim tzdata
+RUN apt-get -y install sudo vim tzdata acl
 
 # Add USERNAME arg and set to "user" by default unless changed. Dockerfile args
 # can be changed by passing in the argument when building the docker image. For

@@ -30,6 +30,19 @@ else
 	printf "\n"
 fi
 
+# Because a chown is being performed above on the current dir, the host will no longer
+# have ownership of the dir. However, the host may still want to perform rw operations
+# in the files and dirs within this dir. setfacl -R -d will give the current dir group
+# rw permissions by default, recursively, and for all future files and dirs placed
+# within this current dir. This is important since the host user will still be
+# within with the group of this current dir.
+#- setfacl -R -d -m g::rw $PROJECT_DIR
+echo "[INFO] Give current dir group rw permissions, recursively, and for all future files and dirs"
+setfacl -R -d -m g::rw ./
+
+echo "[INFO] Give current dir group rw permissions, recursively, for any current files and dirs"
+setfacl -R -m g::rw ./
+
 # Define workspace
 WORKSPACE=$(pwd)
 echo "[INFO] Workspace: "$WORKSPACE
