@@ -28,6 +28,11 @@ echo "[INFO] Workspace: "$WORKSPACE
 POKYDIR=$WORKSPACE/poky
 echo "[INFO] Poky directory: "$POKYDIR
 
+# Change ownership of workspace directory to user of container
+echo "[INFO] Changing ownership of workspace directory"
+echo ${USR} | sudo -S chown ${USR} ../
+printf "\n[INFO] Owner of workspace directory: "${USR}
+
 # Prevent git from prompting us such that this requires no user intervention
 git config --global color.ui false
 git config --global user.name foo
