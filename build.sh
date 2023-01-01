@@ -3,15 +3,17 @@
 echo "[INFO] Build stage started"
 
 USR=$(whoami)
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+
 echo "[INFO] Running as user: ${USR}"
-echo "[INFO] Current working directory: ${pwd}"
+echo "[INFO] Current working directory: ${SCRIPT_DIR}"
 
 if [ $USR = "root" ]; then
 	echo "[ERROR] This script should be run as a non-root user"
 	exit 1
 fi
 
-DEFAULT_BUILD_DIR=${pwd}/workspace/
+DEFAULT_BUILD_DIR=${SCRIPT_DIR}/workspace/
 
 # Use default build directory
 echo "[INFO] Using default build directory: "$DEFAULT_BUILD_DIR
