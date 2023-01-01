@@ -20,6 +20,16 @@ echo "[INFO] Using default build directory: "$DEFAULT_BUILD_DIR
 mkdir -p $DEFAULT_BUILD_DIR
 cd $DEFAULT_BUILD_DIR
 
+# Make sure we have ownership over this folder
+if [ -n "$(find . -user "${USR}" -print -prune -o -prune)" ]; then
+	echo "[INFO] The current directory is owned by ${USR}"
+else
+	echo "[INFO] The current directory is NOT owned by ${USR}"
+	echo "[INFO] Performing chown so ${USR} can own current dir..."
+	echo "${USR}" | sudo -S chown -R ${USR} ./
+	printf "\n"
+fi
+
 # Define workspace
 WORKSPACE=$(pwd)
 echo "[INFO] Workspace: "$WORKSPACE
