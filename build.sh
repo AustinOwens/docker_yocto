@@ -11,7 +11,7 @@ if [ $USR = "root" ]; then
 	exit 1
 fi
 
-DEFAULT_BUILD_DIR=/home/$USR/workspace/
+DEFAULT_BUILD_DIR=${pwd}/workspace/
 
 # Use default build directory
 echo "[INFO] Using default build directory: "$DEFAULT_BUILD_DIR
