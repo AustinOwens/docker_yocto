@@ -83,8 +83,7 @@ docker run \
    -p 8000:8000 \
    --rm \
    --name "yocto_build" \
-   --privileged \
-   --volume="${src_dir}:/home/${usr}/workspace":rw \
+   --volume="${src_dir}:/home/${usr}/workspace":Z \
    -u ${usr} \
    -w /home/${usr} ${img} ${container_cmd}
 
