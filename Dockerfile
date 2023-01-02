@@ -61,9 +61,10 @@ ARG USERNAME=user
 # Add a non-root user with following details:
 # username: $USERNAME
 # password: $USERNAME
+# uid: $UID
 # Home dir: /home/$USERNAME
 # Groups: sudo, $USERNAME
-RUN /usr/sbin/useradd -m -s /bin/bash -u UID -G sudo $USERNAME \
+RUN /usr/sbin/useradd -m -s /bin/bash -u $UID -G sudo $USERNAME \
     && echo $USERNAME:$USERNAME | usr/sbin/chpasswd
 
 # Add build.sh to user's home dir and make executable
