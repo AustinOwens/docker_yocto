@@ -47,7 +47,7 @@ RUN apt-get update \
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
 # Install dependancies for user dev
-RUN apt-get -y install sudo vim tzdata
+RUN apt-get -y install sudo vim tzdata tmux
 
 # Add UID arg and set to 1000 by default unless changed. This should match the UID
 # of the host. Check your UID with the command 'id -u'.
