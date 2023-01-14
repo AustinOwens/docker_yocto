@@ -41,7 +41,8 @@ RUN apt-get update \
         liblz4-tool \
         file \
         gcc-arm-none-eabi \
-        locales
+        locales \
+        libncurses5
 
 # Enabling en_US.UTF-8 locales
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen

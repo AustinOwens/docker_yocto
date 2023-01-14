@@ -37,12 +37,13 @@ git config --global user.email foo@bar.com
 cd $POKYDIR
 source oe-init-build-env
 
-# Add xilinx metalayers
+# Add xilinx metalayers (cwd is in workspace/poky/build)
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-core
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-standalone
 bitbake-layers add-layer ../meta-xilinx/meta-microblaze
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-bsp
 bitbake-layers add-layer ../meta-xilinx/meta-xilinx-contrib
+bitbake-layers add-layer ../meta-xilinx-tools
 
 # Add robodog metalayer
 bitbake-layers add-layer ../meta-robodog
