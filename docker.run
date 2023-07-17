@@ -78,11 +78,15 @@ then
 fi
 set -x
 
+# Need `--security-opt seccomp=unconfined` for building gdk-pixbuf/gtk+3, which
+# are dependencies of OpenCV. More information can be found here:
+# https://github.com/moby/moby/issues/43595
 docker run \
    -i"${tty}" \
    -p 8000:8000 \
    --rm \
    --name "yocto_build" \
+   --security-opt seccomp=unconfined \
    --volume="${src_dir}:/home/${usr}/workspace":Z \
    -u ${usr} \
    -w /home/${usr} ${img} ${container_cmd}
