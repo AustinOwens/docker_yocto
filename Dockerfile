@@ -42,7 +42,8 @@ RUN apt-get update \
         file \
         gcc-arm-none-eabi \
         locales \
-        libncurses5
+        libncurses5 \
+        libusb-1.0-0-dev
 
 # Enabling en_US.UTF-8 locales
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
