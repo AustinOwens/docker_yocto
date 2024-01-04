@@ -3,6 +3,7 @@
 #author       :Austin Owens
 #date         :9/18/2022
 #common_usage :docker build --build-arg USERNAME=<usr> --build-arg UID=<uid> -t yocto-img .
+#common_usage :podman build --build-arg USERNAME=<usr> --build-arg UID=<uid> -t yocto-img .
 #==========================================================================================
 
 # Download latest base image from Ubuntu

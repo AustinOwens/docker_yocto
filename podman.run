@@ -1,0 +1,94 @@
+#!/bin/bash
+#title         :podman.run
+#description   :This file builds the correct arguments for the podman run cmd
+#author        :Austin Owens
+#date          :9/18/2022
+#common_usage  :./podman.run -u <usr> -s $(pwd)/workspace -i yocto-img <container_cmd>
+#=====================================================================================
+
+function print_usage() {
+    cat <<EOF
+OPTIONS:
+    podman.run [options] container_cmd
+    -h: Help
+    -s <name>: Name of the dir to mount outside (src) the container
+    -u <name>: A user to use inside the container (should be same as container build arg)
+    -i <name>: The name of the podman image to run
+    -n: Do not use interactive input (TTY)
+    container_cmd: What you want to run inside of the container (e.g. /bin/bash)
+EOF
+    exit 1
+}
+
+usr=
+src_dir=
+img=
+tty="t"
+
+while getopts 'hu:s:i:n' opt
+do
+    case $opt in
+    h)
+        print_usage
+        ;;
+    u)
+        usr="$OPTARG"
+        ;;
+    s)
+        src_dir="$OPTARG"
+        ;;
+    i)
+        img="$OPTARG"
+        ;;
+    n)
+        tty=""
+        ;;
+    *)
+        print_usage
+        ;;
+    esac
+done
+
+container_cmd=${@:$OPTIND:1}
+
+if [ -z "${container_cmd}" ]
+then
+    echo "Missing a positional argument. container_cmd must be specified."
+    exit 1
+fi
+
+if [ -z ${usr} ]
+then
+    echo "[ERROR] Required argument for podman image -u"
+    exit 1
+fi
+
+
+if [ -z ${src_dir} ]
+then
+    echo "[ERROR] Required argument for podman image -s"
+    exit 1
+fi
+
+
+if [ -z ${img} ]
+then
+    echo "[ERROR] Required argument for podman image -i"
+    exit 1
+fi
+set -x
+
+# Need `--security-opt seccomp=unconfined` for building gdk-pixbuf/gtk+3, which
+# are dependencies of OpenCV. More information can be found here:
+# https://github.com/moby/moby/issues/43595
+podman run \
+   -i"${tty}" \
+   -p 8000:8000 \
+   --rm \
+   --name "yocto_build" \
+   --security-opt seccomp=unconfined \
+   --userns=keep-id \
+   --volume="${src_dir}:/home/${usr}/workspace":Z \
+   -u ${usr} \
+   -w /home/${usr} ${img} ${container_cmd}
+
